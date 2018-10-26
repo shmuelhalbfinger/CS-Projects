@@ -1,0 +1,82 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+void nextColumn(int[],int, int);
+void nextRow(int[], int, int);
+void backtrack(int[], int);
+void print(int[],int, int);
+
+bool isOk(int q[], int c) {
+  for (int i=0; i<c; i++) {
+    if (q[c]==q[i] || c-i==abs(q[c]-q[i])) return false;
+  }
+  return true;
+}
+void backtrack(int q[], int c) {
+  c--;
+  if (c==-1) exit(0);
+  int next = q[c] + 1;
+  nextRow(q, c, next);
+}
+void print(int q[], int c) {
+  static int counter=0;
+  typedef char box[5][7];
+  box wb,bb,*board[8][8];
+  for (int i=0; i<5; i++)
+    for (int j=0; j<7; j++) {
+      wb[i][j]=' ';
+      bb[i][j]=char(219);
+    }
+  box wq={{' ',' ',' ',' ',' ',' ',' '},{' ',char(219),' ',char(219),' ',char(219),' '},{' ',char(219),char(219),char(219),char(219),char(219),' '},{' ',char(219),char(219),char(219),char(219),char(219),' '},{' ',' ',' ',' ',' ',' ',' '}};
+  box bq={{char(219),char(219),char(219),char(219),char(219),char(219),char(219)},{char(219),' ',char(219),' ',char(219),' ',char(219)},{char(219),' ',' ',' ',' ',' ',char(219)},{char(219),' ',' ',' ',' ',' ',char(219)},{char(219),char(219),char(219),char(219),char(219),char(219),char(219)}};
+  for (int i=0; i<8; i++) {
+    for (int j=0; j<8; j++) {
+      if ((i+j)%2==0){
+        if (q[i]==j) board[i][j]=&wq;
+        else board[i][j]=&wb;
+      }
+      else {
+        if (q[i]==j) board[i][j]=&bq;
+        else board[i][j]=&bb;
+      }
+    }
+  }
+  cout<<"Solution "<<++counter<<endl;
+  cout<<"  ";
+  for (int i=0; i<7*8; i++) cout<<'_';
+  cout<<endl;
+  for (int i=0; i<8; i++)
+    for (int k=0; k<5; k++) {
+      cout<<"  "<<char(179);
+      for (int j=0; j<8; j++)
+        for (int l=0; l<7; l++)
+          cout<<(*board[i][j])[k][l];
+      cout<<char(179)<<endl;
+    }
+  cout<<"  ";
+  for (int i=0; i<7*8; i++)
+      cout<<char(196);
+  cout<<endl;
+  cout<<endl;
+  backtrack(q,c);
+}
+void nextColumn (int q[], int c) {
+  c++;
+  if (c==8) print(q,c);
+  q[c]=0;
+  nextRow(q, c, q[c]);
+}
+void nextRow (int q[], int c, int r) {
+  for(int i = r; i < 8; i += 1){
+    q[c] = i;
+    if (isOk(q, c)) nextColumn(q, c);
+  }
+  backtrack(q,c);
+}
+int main() {
+  int q[8], c=0;
+  q[0]=0;
+  nextColumn(q,c);
+  return 0;
+}
+
